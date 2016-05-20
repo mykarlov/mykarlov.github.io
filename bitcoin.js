@@ -11,5 +11,7 @@ var bitcoin = [
          { l: 'http://takefreebitcoin.com/?r=25f72be83f', t: 5, p: 53, v:'Регистрация, подтверждение почты. Минимум на вывод 20 000 сатошей' },
          { l: 'https://pocketdice.io/?r=6376642518', t: 1, p: 1, v:'Кости на сатоши. Для вывода пополнить баланс. Минимальная сумма вывода 0.5 mBTC', i:1, ex:1 },
          { l: 'http://www.faucethouse.com/?r=27806', t: 5, p: 30, v:'Выплаты зависят от курса. Кнопка Cashout отображается, при достижении 10000 сатошей' },
+         { l: 'http://shotbit.co.in/start?ref=1GiYJn6fnZPxmYWgWG6twEPuuHEQrXJ5D8', t: 30, p: 100, v:'Вывод от 15000 сатошей 2 раза в месяц' },
+         { l: 'http://battlebit.co.in/?ref=64266', t: 10, p: 90, v:'Вывод от 10000 сатошей' },                  
          ]
 

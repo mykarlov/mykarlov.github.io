@@ -823,8 +823,9 @@ function tablecreate(nm)
   {   
     bd_const=eval(nm);
   } else
-  {    
-    bd_const=[]; //alert("БД! Не найдена!" );  
+  { 
+    bd_const=eval(nm);
+    if (bd_const==undefined) bd_const=[];    // alert(nm+" БД! Не найдена!" );  
   }
    var bdv=localStorage.getItem(addr00+'bd');
    if (bdv!=undefined)
@@ -856,13 +857,17 @@ function tablecreate(nm)
     bd=bd_const;
    }
    tablecomplete(nm);
-      
-   
-   
    
 });
   }  
   
+}
+function outrotator(nm)
+{
+  document.write('<div id="kran_addr">Ваш кошелек:</div><div id="kran_ctrl"></div><div id="kran_table"></div>');  
+  addrcreate(nm);
+  createcontrol(nm);
+  tablecreate(nm);  
 }
 window.onunload=function()
 {
