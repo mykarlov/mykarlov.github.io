@@ -241,7 +241,8 @@ function createWin(i)
    }   
    nw='w'+addr00+bdXX[i].key;    
   }
-  w = window.open(bd00[i].l, nw, 'scrollbars=1,fullscreen=yes,status=yes,toolbar=no,menubar=no'); 
+  //w = window.open(bd00[i].l, nw, 'scrollbars=1,fullscreen=yes,status=yes,toolbar=no,menubar=no'); 
+  w = window.open(bd00[i].l, nw); 
   bdXX[i].win=w;
   if (bdXX[i].rot)
   {
@@ -268,10 +269,9 @@ function createFrame(i)
     }  
   }
   nw='w'+addr00+bdXX[i].key;
- }
- //w = window.open('', nw, 'scrollbars=1,fullscreen=yes,status=yes,toolbar=no,menubar=no'); 
- // w = window.open('', nw, 'height='+screen.height+',width='+screen.width+',screenX=0,screenY=0,left=0,top=0,scrollbars=1,fullscreen=yes,status=yes,toolbar=no,menubar=no'); 
- w = window.open('', nw, 'scrollbars=1,height='+screen.availHeight+',width='+screen.availWidth); 
+ } 
+ //w = window.open('', nw, 'scrollbars=1,height='+screen.availHeight+',width='+screen.availWidth); 
+ w = window.open('', nw); 
 
  bdXX[i].win=w;
  w.i=i;
