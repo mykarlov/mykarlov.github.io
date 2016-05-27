@@ -87,6 +87,7 @@ var bdXX;
 var tab00; 
 var wop00,wop01_i=-1;
 var wop01;
+var edt00=false;
 var sel00=false;
 var run00=false;
 var addr00='';
@@ -572,8 +573,10 @@ function add_item(item,key,ir)
    itemXX.key=key;
    itemXX.tr=tab00.insertRow(ir);
    itemXX.tr.idx=ii;
-   itemXX.tr.ondblclick=function ()
+   if (edt00)
    {
+   itemXX.tr.ondblclick=function ()
+   {      
       document.getElementById('new_l').value=bd00[ii].l;
       document.getElementById('new_v').value=bd00[ii].v;
       document.getElementById('new_p').value=bd00[ii].p;
@@ -588,6 +591,7 @@ function add_item(item,key,ir)
        add_key(bd00[ii].k);
       } else document.getElementById('add_key').innerHTML="";
    };
+   }
    itemXX.td=document.createElement('td');  
    itemXX.td.ondblclick=function (event){
       bDbClk(ii);event.stopPropagation();
@@ -679,6 +683,7 @@ function add_psw(s,w)
 }
 function add_endtb(tab)
 {
+if (!edt00) return;
 var tr=tab.insertRow(-1);
 tr.idx=-1;
 var st="style='box-sizing: border-box;width: 100%;'"
@@ -800,8 +805,7 @@ function createcontrol(nm)
  }
  s+="/>";
  d.innerHTML+=s;         
- chkRunStop();
- //add_endtb(document.getElementById(nm+'t_ctrl'));
+ chkRunStop(); 
 }
 function tablecreate(nm)
 { 
@@ -862,8 +866,9 @@ function tablecreate(nm)
   }  
   
 }
-function outrotator(nm)
+function outrotator(nm,ed)
 {
+  if (ed!==undefined) edt00=true;
   document.write('<div id="kran_addr">Ваш кошелек:</div><div id="kran_ctrl"></div><div id="kran_table"></div>');  
   addrcreate(nm);
   createcontrol(nm);
