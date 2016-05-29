@@ -89,6 +89,8 @@ var wop00,wop01_i=-1;
 var wop01;
 var edt00=false;
 var sel00=false;
+var sel_auto00=false;
+var sel_vkl00=false;
 var run00=false;
 var addr00='';
 
@@ -125,7 +127,7 @@ function numOpen()
 function chkRunStop()
 {
  var s,b=document.getElementById('btn_run');
- if (numOpen()<0) {s='Начать ротацию';run00=false;} else {s='Завершить ротацию';run00=true;}
+ if (numOpen()<0) {s='Начать ротацию';run00=false;} else { s='Завершить ротацию';run00=true;}
  b.title=s;b.innerHTML='<b>'+s+'</b>';
 }
 function chkLnk()
@@ -247,10 +249,28 @@ function createWin(i)
   bdXX[i].win=w;
   if (bdXX[i].rot)
   {
-   wop01=w;wop01_i=i;     
+   wop01=w;wop01_i=i;
   }
   w.focus();  
   return true;
+}
+function funNextKran()
+{ 
+ sel_vkl00=true;
+ if (run00)
+ {
+  if (funNext(numOpen())) 
+  {
+    if ((wop01!==undefined) && (!(wop01.closed))) 
+    {
+        wop01.close();         
+    }
+    wop00.close();
+  } 
+ } else
+ {
+  funRun();
+ } 
 }
 function createFrame(i) 
 {
@@ -401,7 +421,14 @@ function oFrame(i)
 { 
  if (bdXX[i].rot)
  {
-  if (createFrame(i)) bDbClk(i);
+  if ((sel_auto00) || (sel_vkl00))
+  {
+   if (createWin(i))  bDbClk(i);   
+   sel_vkl00=false;
+  } else
+  {
+   if (createFrame(i)) bDbClk(i);
+  }  
   chkRunStop();
  } else bClk(i); 
 }
@@ -409,12 +436,23 @@ function bClk(i)
 {  
  if (typeof(bd00[i].i)=='undefined')
  {   
-   if (createFrame(i)) bDbClk(i); 
+   if (sel_vkl00)  
+   {
+    if (createWin(i))  bDbClk(i);   
+    sel_vkl00=false;   
+   } else
+   {
+    if (createFrame(i)) bDbClk(i); 
+   }
  } else
  {   
    if (createWin(i))  bDbClk(i);
  }
  chkRunStop();
+}
+function bClk2(i)
+{
+   sel_vkl00=true;bClk(i); 
 }
 function bDel(i)
 {  
@@ -524,26 +562,44 @@ function add_bd(item,ir)
   localStorage.setItem(addr00+'bd',JSON.stringify(bd));
 }
 function bExtract(e,ii)
-{
- var item=bd00[ii];
- if (e.checked) item.ex=undefined;
-           else
+{  
+ var key=theKey(bd00[ii]);
+ if (edt00)
  {
-  r = prompt(bdXX[ii].key+' - для удаления из списка введите "d", иное - исключение из ротации', '');      
-  if (typeof(r)=='string')
-  {      
-   if ((r=='d') || (r=='D'))
+  var item=bd00[ii];  
+  if (e.checked) item.ex=undefined;
+           else
+  {
+   r = prompt(bdXX[ii].key+' - для удаления из списка введите "d", иное - исключение из ротации', '');      
+   if (typeof(r)=='string')
+   {      
+    if ((r=='d') || (r=='D'))
+    {
+     bDel(ii);
+    }
+   } else
    {
-    bDel(ii);
+    e.checked=true;   
+    return;   
    }
+   item.ex=1;
+  }
+  localStorage.removeItem(addr00+'norot_'+key);  
+  add_bd(item,-1); 
+ } else
+ {
+  if (e.checked) 
+  {
+   bdXX[ii].rot=true;   
+   bd00[ii].ex=undefined;
+   localStorage.removeItem(addr00+'norot_'+key);
   } else
   {
-   e.checked=true;   
-   return;   
+   bdXX[ii].rot=false;
+   bd00[ii].ex=1;
+   localStorage.setItem(addr00+'norot_'+key,"1");
   }
-  item.ex=1;
  }
- add_bd(item,-1); 
 }
 function add_item(item,key,ir)
 {
@@ -561,7 +617,14 @@ function add_item(item,key,ir)
   }     
   item.t=Number(item.t+'');
   item.p=Number(item.p+'');    
-  
+  if (edt00)
+  {
+   localStorage.removeItem(addr00+'norot_'+key);   
+  } else
+  if (localStorage.getItem(addr00+'norot_'+key)!=undefined)
+  {
+   item.ex=1;   
+  }
   if (typeof(item.i)=='number')
   {      
    if (item.i!=1) item.i=undefined;
@@ -618,7 +681,7 @@ function add_item(item,key,ir)
     itemXX.rot=false;    
    }
    s+="/>";
-   s+="<button onclick='bClk("+ii+");' title='Открыть";
+   s+="<button onclick='bClk2("+ii+");' title='Открыть";
    if (!itemXX.rot)
    {
     s+=" в индивидуальном окне";   
@@ -652,6 +715,17 @@ function chselp(e)
  } else
  {
   localStorage.removeItem(addr00+'sel_p');
+ }
+}
+function chselp2(e)
+{ 
+ sel_auto00=e.checked;
+ if (e.checked)
+ {
+  localStorage.setItem(addr00+'sel_auto',"true"); 
+ } else
+ {
+  localStorage.removeItem(addr00+'sel_auto');
  }
 }
 function add_key(s)
@@ -722,7 +796,22 @@ function chkOpn()
      tmReset(wop01_i);  
     }
   }   
-  if (run00) chkRunStop();  
+  if (run00) 
+  {
+   if (sel_auto00)
+   {
+     if (wop01_i>=0)   
+     {
+      if (wop01!==undefined) 
+      {
+       if (wop01.closed)
+       {
+        funNextKran();
+       }
+      }      
+     } else chkRunStop();
+   } else chkRunStop();  
+  }
 }
 function tablecomplete(nm)
 {
@@ -798,12 +887,20 @@ function createcontrol(nm)
  if ((nm=='') && (typeof(param.type)=='string')) nm=param.type;
  var d = document.getElementById(nm+'_ctrl');
  if (d==undefined) d = document.getElementById('kran_ctrl');
- var s="<button id='btn_run' onclick='bRunStop();' title=''></button><input type='checkbox' id='sel_p' onchange='chselp(this);' title='Выбирать с наибольшим весом' ";
+ var s="<button id='btn_run' onclick='bRunStop();' title=''></button><input type='checkbox' id='sel_p' onchange='chselp(this);' title='Выбирать сайт с наибольшим весом' ";
  if (localStorage.getItem(nm+'sel_p')!=undefined)
  {
   s+="checked";sel00=true;
  }
  s+="/>";
+ s+="<input type='checkbox' id='sel_auto' onchange='chselp2(this);' title='При закрытии текущего автоматически открывать следующий сайт (Нужно разрешение браузера)' ";
+ if (localStorage.getItem(nm+'sel_auto')!=undefined)
+ {
+  s+="checked";sel_auto00=true;
+ }
+ s+="/>";
+ s+="<button id='btn_nxt' onclick='funNextKran();' title='Следующий сайт'>Далее</button>"; 
+ s+="<br/><iframe src='"+scrPath+"recl.html' width='90%' height='20px' frameborder=no></iframe>";
  d.innerHTML+=s;         
  chkRunStop(); 
 }
