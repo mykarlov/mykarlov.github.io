@@ -887,19 +887,21 @@ function createcontrol(nm)
  if ((nm=='') && (typeof(param.type)=='string')) nm=param.type;
  var d = document.getElementById(nm+'_ctrl');
  if (d==undefined) d = document.getElementById('kran_ctrl');
- var s="<button id='btn_run' onclick='bRunStop();' title=''></button><input type='checkbox' id='sel_p' onchange='chselp(this);' title='Выбирать сайт с наибольшим весом' ";
+ var s="<button id='btn_run' onclick='bRunStop();' title='' style='width:150px;'></button><input type='checkbox' id='sel_p' onchange='chselp(this);' title='Выбирать сайт с наибольшим весом' ";
  if (localStorage.getItem(nm+'sel_p')!=undefined)
  {
   s+="checked";sel00=true;
  }
  s+="/>";
+ /*
  s+="<input type='checkbox' id='sel_auto' onchange='chselp2(this);' title='При закрытии текущего автоматически открывать следующий сайт (Нужно разрешение браузера)' ";
  if (localStorage.getItem(nm+'sel_auto')!=undefined)
  {
   s+="checked";sel_auto00=true;
  }
  s+="/>";
- s+="<button id='btn_nxt' onclick='funNextKran();' title='Следующий сайт'>Далее</button>"; 
+ */
+ s+="<button id='btn_nxt' onclick='funNextKran();' title='Следующий сайт'>Следующий подходящий</button>"; 
  s+="<br/><iframe src='"+scrPath+"recl.html' width='90%' height='20px' frameborder=no></iframe>";
  d.innerHTML+=s;         
  chkRunStop(); 
